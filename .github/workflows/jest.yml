@@ -20,10 +20,5 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Debug - Check for eslint-scope
-        run: |
-          npm ls eslint-scope || true
-          find node_modules -name "eslint-scope" 2>/dev/null || true
-
       - name: Run Jest
         run: npm test
