@@ -79,4 +79,51 @@ export class SettingsPage extends BasePage {
   async assertThemeOptionsHidden(): Promise<void> {
     await expect(this.lightThemeOption).not.toBeVisible({ timeout: 2000 });
   }
+
+  /**
+   * Expand Income accordion and set monthly income
+   */
+  async expandIncome(): Promise<void> {
+    await this.getByRole('button', { name: 'Income' }).click();
+    await expect(this.getByTestId('income-input')).toBeVisible({ timeout: 3000 });
+  }
+
+  /**
+   * Set monthly income value
+   */
+  async setMonthlyIncome(amount: string): Promise<void> {
+    await this.getByTestId('income-input').fill(amount);
+    await this.getByTestId('income-input').blur();
+  }
+
+  /**
+   * Expand Export Data accordion
+   */
+  async expandExportData(): Promise<void> {
+    await this.getByText('Export Data').click();
+    await expect(this.getByTestId('export-excel-button')).toBeVisible({ timeout: 3000 });
+  }
+
+  /**
+   * Trigger Excel export (on web this triggers download)
+   */
+  async triggerExport(): Promise<void> {
+    await this.getByTestId('export-excel-button').click();
+  }
+
+  /**
+   * Expand Help accordion and navigate to Features Guide
+   */
+  async expandHelpAndOpenFeaturesGuide(): Promise<void> {
+    await this.getByText('Help').click();
+    await this.getByTestId('help-documentation-link').click();
+  }
+
+  /**
+   * Assert Help accordion with Features Guide is visible
+   */
+  async assertHelpSectionVisible(): Promise<void> {
+    await this.getByText('Help').click();
+    await expect(this.getByText('Features Guide')).toBeVisible({ timeout: 3000 });
+  }
 }

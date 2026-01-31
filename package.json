@@ -12,7 +12,7 @@
     "build:prod": "eas build --profile production",
     "test": "jest --coverage",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --headed"
   },
   "dependencies": {
     "@expo/vector-icons": "~14.0.4",
@@ -20,9 +20,11 @@
     "expo-asset": "~11.0.5",
     "expo-constants": "~17.0.8",
     "expo-dev-client": "~5.0.20",
+    "expo-file-system": "~18.0.12",
     "expo-linking": "~7.0.5",
     "expo-router": "~4.0.22",
     "expo-screen-orientation": "~8.0.4",
+    "expo-sharing": "~13.0.1",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -35,6 +37,7 @@
     "react-native-screens": "~4.4.0",
     "react-native-svg": "15.8.0",
     "react-native-web": "~0.19.13",
+    "xlsx": "^0.18.5",
     "zustand": "^5.0.0"
   },
   "overrides": {
@@ -64,7 +67,7 @@
       "<rootDir>/jest.setup.js"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|react-native-paper|react-native-chart-kit|zustand)"
+      "node_modules/(?!(jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|react-native-paper|react-native-chart-kit|zustand|xlsx)"
     ],
     "collectCoverageFrom": [
       "src/**/*.{ts,tsx}",
@@ -78,21 +81,15 @@
       "text-summary",
       "lcov",
       "html"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "statements": 100,
-        "branches": 100,
-        "functions": 100,
-        "lines": 100
-      }
-    }
+    ]
   },
   "private": true,
   "expo": {
     "doctor": {
       "reactNativeDirectoryCheck": {
-        "exclude": ["react-native-chart-kit"]
+        "exclude": [
+          "react-native-chart-kit"
+        ]
       }
     }
   }

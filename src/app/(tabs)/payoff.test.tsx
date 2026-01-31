@@ -146,14 +146,15 @@ describe('PayoffScreen', () => {
     render(wrap(<PayoffScreen />));
     expect(capturedSetOptions.headerRight).toBeDefined();
     const HeaderRight = capturedSetOptions.headerRight!;
-    const { getByLabelText } = render(wrap(HeaderRight()));
+    const { getByLabelText, getByTestId } = render(wrap(HeaderRight()));
     fireEvent.press(getByLabelText('Open payoff timeline'));
     expect(mockPush).toHaveBeenCalledWith('/payoff-timeline');
     mockPush.mockClear();
     fireEvent.press(getByLabelText('Open charts'));
     expect(mockPush).toHaveBeenCalledWith('/charts');
     mockPush.mockClear();
-    fireEvent.press(getByLabelText('Open settings'));
+    fireEvent.press(getByLabelText('Open menu'));
+    fireEvent.press(getByTestId('menu-item-settings'));
     expect(mockPush).toHaveBeenCalledWith('/settings');
   });
 
@@ -169,9 +170,9 @@ describe('PayoffScreen', () => {
     const chartsBtn = getByLabelText('Open charts');
     fireEvent(chartsBtn, 'pressIn');
     fireEvent(chartsBtn, 'pressOut');
-    const settingsBtn = getByLabelText('Open settings');
-    fireEvent(settingsBtn, 'pressIn');
-    fireEvent(settingsBtn, 'pressOut');
+    const menuBtn = getByLabelText('Open menu');
+    fireEvent(menuBtn, 'pressIn');
+    fireEvent(menuBtn, 'pressOut');
     expect(timelineBtn).toBeOnTheScreen();
   });
 
@@ -183,7 +184,7 @@ describe('PayoffScreen', () => {
     const { queryByLabelText, getByLabelText } = render(wrap(HeaderRight()));
     expect(queryByLabelText('Open payoff timeline')).toBeNull();
     expect(queryByLabelText('Open charts')).toBeNull();
-    expect(getByLabelText('Open settings')).toBeOnTheScreen();
+    expect(getByLabelText('Open menu')).toBeOnTheScreen();
   });
 
   it('shows income insights card when monthly income is set', () => {
@@ -203,15 +204,15 @@ describe('PayoffScreen', () => {
     expect(screen.getByText(/Add your income in Settings/)).toBeOnTheScreen();
   });
 
-  it('header settings button receives pressed state when schedule is null', () => {
+  it('header menu button receives pressed state when schedule is null', () => {
     mockDebts = [{ id: '1', name: 'Card', type: 'credit_card', balance: 1000, interestRate: 15, minimumPayment: 100, createdAt: '' }];
     mockMonthlyPayment = '50';
     render(wrap(<PayoffScreen />));
     const HeaderRight = capturedSetOptions.headerRight!;
     const { getByLabelText } = render(wrap(HeaderRight()));
-    const settingsBtn = getByLabelText('Open settings');
-    fireEvent(settingsBtn, 'pressIn');
-    fireEvent(settingsBtn, 'pressOut');
-    expect(settingsBtn).toBeOnTheScreen();
+    const menuBtn = getByLabelText('Open menu');
+    fireEvent(menuBtn, 'pressIn');
+    fireEvent(menuBtn, 'pressOut');
+    expect(menuBtn).toBeOnTheScreen();
   });
 });

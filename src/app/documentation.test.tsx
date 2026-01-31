@@ -70,7 +70,7 @@ describe('DocumentationScreen', () => {
   it('switches to Settings & Customization when pressed', () => {
     render(wrap(<DocumentationScreen />));
     fireEvent.press(screen.getByText('Settings & Customization'));
-    expect(screen.getByText('Tap the gear icon in the header from any screen.')).toBeOnTheScreen();
+    expect(screen.getByText(/Tap the menu icon.*from any screen/)).toBeOnTheScreen();
   });
 
   it('switches to Tips & Best Practices when pressed', () => {

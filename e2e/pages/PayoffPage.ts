@@ -10,7 +10,7 @@ export class PayoffPage extends BasePage {
   readonly emptyState: Locator;
   readonly methodCard: Locator;
   readonly monthlyPaymentInput: Locator;
-  readonly settingsButton: Locator;
+  readonly menuButton: Locator;
   readonly chartsButton: Locator;
   readonly timelineButton: Locator;
 
@@ -19,7 +19,7 @@ export class PayoffPage extends BasePage {
     this.emptyState = this.getByTestId('payoff-empty');
     this.methodCard = this.getByTestId('payoff-method-card');
     this.monthlyPaymentInput = this.getByTestId('monthly-payment-input');
-    this.settingsButton = this.getByLabel(/open settings/i).first();
+    this.menuButton = this.getByLabel(/open menu/i).first();
     this.chartsButton = this.getByLabel(/open charts/i);
     this.timelineButton = this.getByLabel(/open payoff timeline/i);
   }
@@ -62,12 +62,14 @@ export class PayoffPage extends BasePage {
   }
 
   /**
-   * Navigate to settings
+   * Navigate to settings via menu
    */
   async openSettings(): Promise<void> {
-    await expect(this.settingsButton).toBeVisible({ timeout: 5000 });
-    // Use force:true because inner icon element intercepts pointer events
-    await this.settingsButton.click({ force: true });
+    await expect(this.menuButton).toBeVisible({ timeout: 5000 });
+    await this.menuButton.click({ force: true });
+    const settingsItem = this.getByTestId('menu-item-settings');
+    await expect(settingsItem).toBeVisible({ timeout: 3000 });
+    await settingsItem.click();
   }
 
   /**
@@ -137,10 +139,10 @@ export class PayoffPage extends BasePage {
   }
 
   /**
-   * Assert settings button is visible
+   * Assert menu button is visible
    */
-  async assertSettingsButtonVisible(): Promise<void> {
-    await expect(this.settingsButton).toBeVisible({ timeout: 5000 });
+  async assertMenuButtonVisible(): Promise<void> {
+    await expect(this.menuButton).toBeVisible({ timeout: 5000 });
   }
 
   /**
@@ -162,5 +164,25 @@ export class PayoffPage extends BasePage {
    */
   async assertMonthlyPaymentValue(value: string): Promise<void> {
     await expect(this.monthlyPaymentInput).toHaveValue(value);
+  }
+
+  /**
+   * Navigate to Help & Documentation via menu
+   */
+  async openHelp(): Promise<void> {
+    await expect(this.menuButton).toBeVisible({ timeout: 5000 });
+    await this.menuButton.click({ force: true });
+    const helpItem = this.getByTestId('menu-item-help');
+    await expect(helpItem).toBeVisible({ timeout: 3000 });
+    await helpItem.click();
+  }
+
+  /**
+   * Assert income insights card is visible (when income is set)
+   */
+  async assertIncomeInsightsVisible(): Promise<void> {
+    const incomeCard = this.getByTestId('income-insights-card');
+    await expect(incomeCard).toBeVisible({ timeout: 5000 });
+    await expect(incomeCard.getByText('Income Insights')).toBeVisible();
   }
 }

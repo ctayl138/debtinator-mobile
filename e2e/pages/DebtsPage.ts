@@ -81,11 +81,23 @@ export class DebtsPage extends BasePage {
   }
 
   /**
-   * Delete a debt by name
+   * Delete a debt by name (via edit form)
    */
   async deleteDebt(debtName: string): Promise<void> {
     await this.openDebtForEdit(debtName);
     await this.debtForm.delete();
+  }
+
+  /**
+   * Delete a debt via long-press on the debt card.
+   * On web, uses a delayed click to simulate long press.
+   */
+  async deleteDebtViaLongPress(debtName: string): Promise<void> {
+    const debtCard = this.getByText(debtName);
+    await debtCard.click({ delay: 800 });
+
+    await expect(this.getByTestId('delete-debt-dialog')).toBeVisible({ timeout: 3000 });
+    await this.getByRole('button', { name: 'Delete', exact: true }).click();
   }
 
   /**

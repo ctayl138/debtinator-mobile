@@ -93,8 +93,8 @@ test.describe('Payoff - Navigation Icons', () => {
     await payoffPage.setMonthlyPayment('100');
   });
 
-  test('shows settings cog icon in header', async ({ payoffPage }) => {
-    await payoffPage.assertSettingsButtonVisible();
+  test('shows menu button in header', async ({ payoffPage }) => {
+    await payoffPage.assertMenuButtonVisible();
   });
 
   test('shows chart icon when payoff plan is configured', async ({ payoffPage }) => {
@@ -109,5 +109,35 @@ test.describe('Payoff - Navigation Icons', () => {
     await payoffPage.openSettings();
     await settingsPage.waitForReady();
     await settingsPage.assertAppearanceVisible();
+  });
+});
+
+test.describe('Payoff - Income Insights', () => {
+  test('shows income insights when income is set in settings', async ({
+    debtsPage,
+    payoffPage,
+    settingsPage,
+    page,
+  }) => {
+    await debtsPage.goto();
+    await debtsPage.addDebt({
+      name: 'Income Insights Test',
+      balance: '2000',
+      interestRate: '15',
+      minimumPayment: '50',
+    });
+    await page.getByRole('tab', { name: /payoff/i }).first().click();
+    await payoffPage.waitForReady();
+
+    await payoffPage.openSettings();
+    await settingsPage.waitForReady();
+    await settingsPage.expandIncome();
+    await settingsPage.setMonthlyIncome('5000');
+
+    await settingsPage.goBack();
+    await payoffPage.waitForReady();
+    await payoffPage.setMonthlyPayment('100');
+
+    await payoffPage.assertIncomeInsightsVisible();
   });
 });

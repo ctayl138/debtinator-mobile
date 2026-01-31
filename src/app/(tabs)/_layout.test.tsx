@@ -57,22 +57,23 @@ describe('TabLayout', () => {
     expect(getByTestId('header-right')).toBeOnTheScreen();
   });
 
-  it('settings button has Open settings accessibility label', () => {
+  it('menu button has Open menu accessibility label', () => {
     const { getByLabelText } = render(wrap(<TabLayout />));
-    expect(getByLabelText('Open settings')).toBeOnTheScreen();
+    expect(getByLabelText('Open menu')).toBeOnTheScreen();
   });
 
-  it('pressing settings button calls router.push with /settings', () => {
-    const { getByLabelText } = render(wrap(<TabLayout />));
-    fireEvent.press(getByLabelText('Open settings'));
+  it('menu opens and Settings navigates to /settings', () => {
+    const { getByLabelText, getByTestId } = render(wrap(<TabLayout />));
+    fireEvent.press(getByLabelText('Open menu'));
+    fireEvent.press(getByTestId('menu-item-settings'));
     expect(mockPush).toHaveBeenCalledWith('/settings');
   });
 
-  it('header right Pressable style receives pressed state on pressIn', () => {
+  it('menu button receives pressed state on pressIn/pressOut', () => {
     const { getByLabelText } = render(wrap(<TabLayout />));
-    const settingsBtn = getByLabelText('Open settings');
-    fireEvent(settingsBtn, 'pressIn');
-    fireEvent(settingsBtn, 'pressOut');
-    expect(settingsBtn).toBeOnTheScreen();
+    const menuBtn = getByLabelText('Open menu');
+    fireEvent(menuBtn, 'pressIn');
+    fireEvent(menuBtn, 'pressOut');
+    expect(menuBtn).toBeOnTheScreen();
   });
 });

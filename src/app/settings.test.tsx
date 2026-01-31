@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react-native';
+import { render, screen, fireEvent, cleanup, act, waitFor } from '@testing-library/react-native';
 import { PaperProvider } from 'react-native-paper';
 
 let mockMode = 'light';
@@ -14,6 +14,37 @@ const mockSetMonthlyIncome = jest.fn();
 jest.mock('@/store/useIncomeStore', () => ({
   useIncomeStore: (selector: (s: { monthlyIncome: number; setMonthlyIncome: jest.Mock }) => unknown) =>
     selector({ monthlyIncome: mockMonthlyIncome, setMonthlyIncome: mockSetMonthlyIncome }),
+}));
+
+let mockDebts: { id: string; name: string; type: string; balance: number; interestRate: number; minimumPayment: number; createdAt: string }[] = [];
+jest.mock('@/store/useDebtStore', () => ({
+  useDebts: () => mockDebts,
+}));
+
+jest.mock('@/store/usePayoffFormStore', () => ({
+  usePayoffFormStore: () => ({
+    method: 'snowball',
+    monthlyPayment: '200',
+  }),
+}));
+
+jest.mock('expo-file-system', () => ({
+  cacheDirectory: '/cache/',
+  EncodingType: { Base64: 'base64' },
+  writeAsStringAsync: jest.fn(() => Promise.resolve()),
+}));
+
+jest.mock('expo-sharing', () => ({
+  isAvailableAsync: jest.fn(() => Promise.resolve(true)),
+  shareAsync: jest.fn(() => Promise.resolve()),
+}));
+
+let mockPlatformOS: 'ios' | 'android' | 'web' = 'ios';
+jest.mock('react-native/Libraries/Utilities/Platform', () => ({
+  get OS() {
+    return mockPlatformOS;
+  },
+  select: jest.fn((obj: Record<string, unknown>) => obj[mockPlatformOS] ?? obj.default),
 }));
 
 const mockSetOptions = jest.fn();
@@ -33,6 +64,7 @@ describe('SettingsScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockMode = 'light';
+    mockPlatformOS = 'ios';
     mockPush.mockClear();
     jest.useFakeTimers();
   });
@@ -167,5 +199,88 @@ describe('SettingsScreen', () => {
     fireEvent.changeText(input, '0');
     fireEvent(input, 'blur');
     expect(mockSetMonthlyIncome).toHaveBeenCalledWith(0);
+  });
+
+  it('renders Export Data accordion', () => {
+    render(wrap(<SettingsScreen />));
+    expect(screen.getByText('Export Data')).toBeOnTheScreen();
+  });
+
+  it('renders Export to Excel when Export Data accordion is expanded', () => {
+    render(wrap(<SettingsScreen />));
+    fireEvent.press(screen.getByText('Export Data'));
+    expect(screen.getByText('Export to Excel')).toBeOnTheScreen();
+    expect(screen.getByTestId('export-excel-button')).toBeOnTheScreen();
+  });
+
+  it('triggers export when Export to Excel is pressed (native)', async () => {
+    render(wrap(<SettingsScreen />));
+    fireEvent.press(screen.getByText('Export Data'));
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('export-excel-button'));
+      await Promise.resolve();
+    });
+    const FileSystem = require('expo-file-system');
+    await waitFor(() => {
+      expect(FileSystem.writeAsStringAsync).toHaveBeenCalled();
+    });
+  });
+
+  it('shows Alert when Sharing is not available', async () => {
+    const Sharing = require('expo-sharing');
+    Sharing.isAvailableAsync.mockResolvedValue(false);
+    const alertSpy = jest.spyOn(require('react-native').Alert, 'alert').mockImplementation();
+
+    render(wrap(<SettingsScreen />));
+    fireEvent.press(screen.getByText('Export Data'));
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('export-excel-button'));
+      await Promise.resolve();
+    });
+    await waitFor(() => {
+      expect(alertSpy).toHaveBeenCalledWith(
+        'Export Complete',
+        expect.stringContaining('Use a file manager')
+      );
+    });
+
+    alertSpy.mockRestore();
+    Sharing.isAvailableAsync.mockResolvedValue(true);
+  });
+
+  it('shows Alert when export fails', async () => {
+    const FileSystem = require('expo-file-system');
+    FileSystem.writeAsStringAsync.mockRejectedValueOnce(new Error('Export failed'));
+    const alertSpy = jest.spyOn(require('react-native').Alert, 'alert').mockImplementation();
+
+    render(wrap(<SettingsScreen />));
+    fireEvent.press(screen.getByText('Export Data'));
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('export-excel-button'));
+      await Promise.resolve();
+    });
+    await waitFor(() => {
+      expect(alertSpy).toHaveBeenCalledWith('Export Failed', 'Export failed');
+    });
+
+    alertSpy.mockRestore();
+  });
+
+  it('shows generic message when export throws non-Error', async () => {
+    const FileSystem = require('expo-file-system');
+    FileSystem.writeAsStringAsync.mockRejectedValueOnce('string error');
+    const alertSpy = jest.spyOn(require('react-native').Alert, 'alert').mockImplementation();
+
+    render(wrap(<SettingsScreen />));
+    fireEvent.press(screen.getByText('Export Data'));
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('export-excel-button'));
+      await Promise.resolve();
+    });
+    await waitFor(() => {
+      expect(alertSpy).toHaveBeenCalledWith('Export Failed', 'Could not export data');
+    });
+
+    alertSpy.mockRestore();
   });
 });

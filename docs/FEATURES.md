@@ -210,7 +210,7 @@ The timeline uses infinite scroll - keep scrolling to load more months.
 
 ### Accessing Settings
 
-Tap the **gear icon** in the header from any screen.
+Tap the **menu icon** (☰) in the header from any screen, then select **Settings**.
 
 ### Income (Optional)
 
@@ -246,6 +246,23 @@ Dark theme colors:
 - Primary: Soft purple (#D0BCFF)
 - Secondary: Muted lavender (#CCC2DC)
 - Background: Deep charcoal (#1C1B1F)
+
+### Export Data
+
+Export all your debt information to Excel for sharing with a debt counselor or financial advisor:
+
+1. Open **Settings** and expand **Export Data**
+2. Tap **Export to Excel**
+3. On iOS/Android: Use the share sheet to save or send the file (email, AirDrop, etc.)
+4. On Web: The file downloads automatically
+
+The Excel file includes:
+- **Summary** – Total debt, minimum payments, income, payoff timeline, debt-to-income ratios
+- **Debts** – Each debt with name, type, balance, interest rate, minimum payment
+- **Income & Plan** – Monthly income and payoff method
+- **Payoff Schedule** – Month-by-month breakdown (when you have a valid plan)
+
+> **Note**: Export includes all data you've entered. Only share with trusted professionals.
 
 ### Data Persistence
 

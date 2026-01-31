@@ -292,7 +292,7 @@ function SettingsContent() {
   return (
     <View style={styles.accordionContent}>
       <DocSection title="Accessing Settings">
-        <DocParagraph>Tap the gear icon in the header from any screen.</DocParagraph>
+        <DocParagraph>Tap the menu icon (☰) in the header from any screen, then select Settings or Help.</DocParagraph>
       </DocSection>
 
       <DocSection title="Theme Mode">
@@ -447,7 +447,7 @@ export default function DocumentationScreen() {
         <List.Accordion
           id="settings"
           title="Settings & Customization"
-          left={(props) => <List.Icon {...props} icon="cog-outline" />}
+          left={(props) => <List.Icon {...props} icon="menu" />}
           right={(props) => (
             <List.Icon {...props} icon={props.isExpanded ? 'chevron-up' : 'chevron-down'} />
           )}

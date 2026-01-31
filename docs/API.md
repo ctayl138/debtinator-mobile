@@ -420,7 +420,7 @@ Creates a style function for Pressable components.
 
 ```typescript
 <Pressable style={createPressedStyle({ padding: 8, marginRight: 8 })}>
-  <Icon name="settings" />
+  <Icon name="menu" />
 </Pressable>
 ```
 

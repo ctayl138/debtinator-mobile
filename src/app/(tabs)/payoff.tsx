@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { Text, SegmentedButtons, TextInput, Card, useTheme } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation, useRouter } from 'expo-router';
+import HeaderMenuButton from '@/components/HeaderMenuButton';
 import { useDebts } from '@/store/useDebtStore';
 import { usePayoffFormStore } from '@/store/usePayoffFormStore';
 import { useIncomeStore } from '@/store/useIncomeStore';
@@ -69,13 +70,7 @@ export default function PayoffScreen() {
               </Pressable>
             </>
           )}
-          <Pressable
-            onPress={() => router.push('/settings')}
-            style={createPressedStyle({ padding: 8, marginRight: 8 })}
-            accessibilityLabel="Open settings"
-          >
-            <MaterialCommunityIcons name="cog-outline" size={24} color={headerColor} />
-          </Pressable>
+          <HeaderMenuButton color={headerColor} style={{ padding: 8, marginRight: 8 }} />
         </View>
       ),
     });

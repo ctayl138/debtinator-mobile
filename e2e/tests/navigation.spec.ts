@@ -77,4 +77,62 @@ test.describe('Navigation', () => {
     // Should be back on payoff
     await payoffPage.waitForReady();
   });
+
+  test('can navigate to Help & Documentation from menu', async ({
+    debtsPage,
+    payoffPage,
+    documentationPage,
+    page,
+  }) => {
+    await debtsPage.goto();
+    await page.getByRole('tab', { name: /payoff/i }).first().click();
+    await payoffPage.waitForReady();
+
+    await payoffPage.openHelp();
+    await documentationPage.waitForReady();
+    await documentationPage.assertContentVisible();
+  });
+
+  test('can navigate back from documentation', async ({
+    debtsPage,
+    payoffPage,
+    documentationPage,
+    page,
+  }) => {
+    await debtsPage.goto();
+    await page.getByRole('tab', { name: /payoff/i }).first().click();
+    await payoffPage.waitForReady();
+    await payoffPage.openHelp();
+    await documentationPage.waitForReady();
+
+    await documentationPage.goBack();
+
+    await expect(
+      payoffPage.emptyState.or(payoffPage.methodCard).first()
+    ).toBeVisible({ timeout: 5000 });
+  });
+
+  test('can navigate back from timeline', async ({
+    debtsPage,
+    payoffPage,
+    timelinePage,
+    page,
+  }) => {
+    await debtsPage.goto();
+    await debtsPage.addDebt({
+      name: 'Timeline Nav Test',
+      balance: '1000',
+      interestRate: '10',
+      minimumPayment: '30',
+    });
+    await page.getByRole('tab', { name: /payoff/i }).first().click();
+    await payoffPage.waitForReady();
+    await payoffPage.setMonthlyPayment('60');
+    await payoffPage.openTimeline();
+    await timelinePage.waitForReady();
+
+    await timelinePage.goBack();
+
+    await payoffPage.waitForReady();
+  });
 });

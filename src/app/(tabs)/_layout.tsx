@@ -1,24 +1,13 @@
-import { Tabs, useRouter } from 'expo-router';
-import { Pressable } from 'react-native';
+import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from 'react-native-paper';
-import { createPressedStyle } from '@/utils/styles';
+import HeaderMenuButton from '@/components/HeaderMenuButton';
 
 export default function TabLayout() {
   const theme = useTheme();
-  const router = useRouter();
+  const headerColor = (theme.colors as { onHeader?: string }).onHeader ?? theme.colors.onSurface;
   const headerRight = () => (
-    <Pressable
-      onPress={() => router.push('/settings')}
-      style={createPressedStyle({ padding: 8, marginRight: 8 })}
-      accessibilityLabel="Open settings"
-    >
-      <MaterialCommunityIcons
-        name="cog-outline"
-        size={24}
-        color={(theme.colors as { onHeader?: string }).onHeader ?? theme.colors.onSurface}
-      />
-    </Pressable>
+    <HeaderMenuButton color={headerColor} />
   );
 
   return (

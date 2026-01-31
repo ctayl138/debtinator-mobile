@@ -74,6 +74,13 @@ test.describe('Debts - Add Debt Form', () => {
     await debtsPage.assertDebtVisible('Car Loan');
     await debtsPage.assertDebtBalance('$15,000.00');
   });
+
+  test('can add debt with type Other', async ({ debtsPage }) => {
+    await debtsPage.addDebt(testDebts.other);
+
+    await debtsPage.assertDebtVisible('Medical Bill');
+    await debtsPage.assertDebtBalance('$2,500.00');
+  });
 });
 
 test.describe('Debts - Edit and Delete', () => {
@@ -128,5 +135,18 @@ test.describe('Debts - Edit and Delete', () => {
     await debtsPage.assertDebtVisible('To Be Deleted');
     await debtsPage.deleteDebt('To Be Deleted');
     await debtsPage.assertDebtNotVisible('To Be Deleted');
+  });
+
+  test('can delete debt via long press', async ({ debtsPage }) => {
+    await debtsPage.addDebt({
+      name: 'Long Press Delete Test',
+      balance: '200',
+      interestRate: '8',
+      minimumPayment: '15',
+    });
+
+    await debtsPage.assertDebtVisible('Long Press Delete Test');
+    await debtsPage.deleteDebtViaLongPress('Long Press Delete Test');
+    await debtsPage.assertDebtNotVisible('Long Press Delete Test');
   });
 });

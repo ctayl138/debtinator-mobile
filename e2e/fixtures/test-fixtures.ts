@@ -1,5 +1,5 @@
 import { test as base } from '@playwright/test';
-import { DebtsPage, PayoffPage, ChartsPage, SettingsPage, TimelinePage } from '../pages';
+import { DebtsPage, PayoffPage, ChartsPage, SettingsPage, TimelinePage, DocumentationPage } from '../pages';
 
 /**
  * Custom Playwright fixtures for Debtinator E2E tests.
@@ -13,6 +13,7 @@ export const test = base.extend<{
   chartsPage: ChartsPage;
   settingsPage: SettingsPage;
   timelinePage: TimelinePage;
+  documentationPage: DocumentationPage;
 }>({
   // Debts page fixture
   debtsPage: async ({ page }, use) => {
@@ -42,6 +43,12 @@ export const test = base.extend<{
   timelinePage: async ({ page }, use) => {
     const timelinePage = new TimelinePage(page);
     await use(timelinePage);
+  },
+
+  // Documentation page fixture
+  documentationPage: async ({ page }, use) => {
+    const documentationPage = new DocumentationPage(page);
+    await use(documentationPage);
   },
 });
 

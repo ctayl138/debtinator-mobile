@@ -559,7 +559,7 @@ ThemeProvider
 **Tab Layout** (`(tabs)/_layout.tsx`):
 - Tab bar icons and labels
 - Screen-specific headers
-- Header right actions (settings button)
+- Header right actions (menu button)
 
 **Screen Headers**:
 - Dynamic header colors from theme

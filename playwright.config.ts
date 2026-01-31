@@ -17,7 +17,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: 1,
+  workers: process.env.CI ? 2 : undefined,
   reporter: [
     ['html'],
     ['list'],
@@ -30,6 +30,8 @@ export default defineConfig({
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+    { name: 'edge', use: { ...devices['Desktop Edge'] } },
   ],
   webServer: {
     command: 'npx expo start --web',
