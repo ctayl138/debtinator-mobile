@@ -1,4 +1,4 @@
-name: iOS production build and submit
+name: iOS simulator build
 
 on:
   push:
@@ -6,26 +6,8 @@ on:
 
 jobs:
   build_ios:
-    name: Build iOS
+    name: Build iOS (simulator)
     type: build
     params:
       platform: ios
-      profile: production
-  get_ios_build:
-    name: Get iOS build
-    type: get-build
-    needs: [build_ios]
-    params:
-      platform: ios
-      profile: production
-      distribution: store
-      wait_for_in_progress: true
-  submit_ios:
-    name: Submit to App Store
-    type: submit
-    after: [get_ios_build]
-    if: ${{ after.get_ios_build.status == 'success' }}
-    params:
-      platform: ios
-      build_id: ${{ after.get_ios_build.outputs.build_id }}
-      profile: production
+      profile: development
