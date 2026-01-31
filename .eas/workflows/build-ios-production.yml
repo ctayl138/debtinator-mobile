@@ -11,11 +11,20 @@ jobs:
     params:
       platform: ios
       profile: production
-  submit_ios:
-    name: Submit to App Store
-    type: submit
+  get_ios_build:
+    name: Get iOS build
+    type: get-build
     needs: [build_ios]
     params:
       platform: ios
-      build_id: ${{ needs.build_ios.outputs.build_id }}
+      profile: production
+      distribution: store
+      wait_for_in_progress: true
+  submit_ios:
+    name: Submit to App Store
+    type: submit
+    needs: [get_ios_build]
+    params:
+      platform: ios
+      build_id: ${{ needs.get_ios_build.outputs.build_id }}
       profile: production
