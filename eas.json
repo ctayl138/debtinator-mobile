@@ -17,7 +17,16 @@
     "preview": {
       "distribution": "internal",
       "ios": {
-        "simulator": true
+        "simulator": false
+      },
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "preview-device": {
+      "distribution": "internal",
+      "ios": {
+        "simulator": false
       },
       "android": {
         "buildType": "apk"
