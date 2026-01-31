@@ -9,6 +9,7 @@ export default function RootLayout() {
         <Stack.Screen name="settings" options={{ title: 'Settings' }} />
         <Stack.Screen name="charts" options={{ title: 'Charts' }} />
         <Stack.Screen name="payoff-timeline" options={{ title: 'Payoff Timeline' }} />
+        <Stack.Screen name="documentation" options={{ title: 'Help & Documentation' }} />
       </Stack>
     </ThemeProvider>
   );

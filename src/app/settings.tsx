@@ -1,7 +1,7 @@
 import React, { useState, useLayoutEffect } from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
 import { List, Divider, useTheme } from 'react-native-paper';
-import { useNavigation } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 import { useThemeStore } from '@/store/useThemeStore';
 import type { ThemeMode } from '@/theme/tokens';
 
@@ -14,6 +14,7 @@ const THEME_OPTIONS: { value: ThemeMode; label: string }[] = [
 export default function SettingsScreen() {
   const theme = useTheme();
   const navigation = useNavigation();
+  const router = useRouter();
   const mode = useThemeStore((s) => s.mode);
   const setMode = useThemeStore((s) => s.setMode);
   const [expandedId, setExpandedId] = useState<string | number>('appearance');
@@ -77,7 +78,26 @@ export default function SettingsScreen() {
 
         <Divider />
 
-        {/* Placeholder for future settings groups – add more List.Accordion sections here */}
+        <List.Accordion
+          id="help"
+          title="Help"
+          left={(props) => <List.Icon {...props} icon="help-circle-outline" />}
+          right={(props) => (
+            <List.Icon
+              {...props}
+              icon={props.isExpanded ? 'chevron-up' : 'chevron-down'}
+            />
+          )}
+        >
+          <List.Item
+            title="Features Guide"
+            description="Learn how to use all app features"
+            left={(props) => <List.Icon {...props} icon="book-open-outline" />}
+            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            onPress={() => router.push('/documentation')}
+            testID="help-documentation-link"
+          />
+        </List.Accordion>
       </List.AccordionGroup>
     </ScrollView>
   );

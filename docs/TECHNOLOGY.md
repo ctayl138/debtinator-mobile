@@ -373,7 +373,7 @@ module.exports = config;
 
 ## Testing
 
-### Jest
+### Jest (Unit Tests)
 
 **Version**: 29.7.0
 
@@ -398,6 +398,47 @@ JavaScript testing framework configured with Expo preset.
 }
 ```
 
+#### Running Unit Tests
+
+| Command | Description |
+|---------|-------------|
+| `npm test` | Run all tests with coverage |
+| `npm test -- --no-coverage` | Run all tests without coverage report |
+| `npm test -- --watch` | Run tests in watch mode (re-runs on file changes) |
+| `npm test -- --testPathPattern="settings"` | Run tests matching a pattern |
+| `npm test -- --testNamePattern="renders"` | Run tests with names matching a pattern |
+
+**Examples**:
+
+```bash
+# Run all unit tests with coverage
+npm test
+
+# Run tests without coverage (faster)
+npm test -- --no-coverage
+
+# Run only settings tests
+npm test -- --testPathPattern="settings"
+
+# Run tests for multiple files
+npm test -- --testPathPattern="(settings|documentation)"
+
+# Run a specific test file
+npm test -- src/app/settings.test.tsx
+
+# Run tests in watch mode during development
+npm test -- --watch --no-coverage
+
+# Run tests and update snapshots (if any)
+npm test -- --updateSnapshot
+```
+
+**Coverage Reports**:
+
+After running `npm test`, coverage reports are generated in the `coverage/` directory:
+- `coverage/lcov-report/index.html` - Interactive HTML report
+- `coverage/text-summary` - Terminal summary
+
 ### React Native Testing Library
 
 **Version**: 12.4.3
@@ -414,21 +455,117 @@ test('adds a new debt', () => {
 });
 ```
 
-### Playwright
+### Playwright (E2E Tests)
 
 **Version**: 1.49.0
 
-End-to-end testing for web version:
+End-to-end testing for the web version of the app.
+
+#### Prerequisites
+
+Before running Playwright tests:
+
+1. **Install Playwright browsers** (first time only):
+   ```bash
+   npx playwright install
+   ```
+
+2. **Start the development server** in a separate terminal:
+   ```bash
+   npm run web
+   ```
+
+#### Running E2E Tests
+
+| Command | Description |
+|---------|-------------|
+| `npm run test:e2e` | Run all E2E tests headlessly |
+| `npm run test:e2e:ui` | Open Playwright UI for interactive testing |
+| `npx playwright test --headed` | Run tests with visible browser |
+| `npx playwright test --debug` | Run tests in debug mode |
+
+**Examples**:
+
+```bash
+# Run all E2E tests (headless)
+npm run test:e2e
+
+# Open Playwright UI for interactive test running and debugging
+npm run test:e2e:ui
+
+# Run specific test file
+npx playwright test e2e/tests/debts.spec.ts
+
+# Run tests matching a pattern
+npx playwright test --grep "add debt"
+
+# Run tests with visible browser
+npx playwright test --headed
+
+# Run tests in debug mode (step through tests)
+npx playwright test --debug
+
+# Run tests in a specific browser
+npx playwright test --project=chromium
+npx playwright test --project=firefox
+npx playwright test --project=webkit
+
+# Generate HTML report after test run
+npx playwright show-report
+```
+
+**Test Structure**:
+
+```
+e2e/
+├── tests/
+│   ├── debts.spec.ts       # Debt management tests
+│   ├── navigation.spec.ts  # Navigation tests
+│   ├── validation.spec.ts  # Form validation tests
+│   └── charts.spec.ts      # Chart functionality tests
+└── pages/
+    ├── BasePage.ts         # Base page object
+    ├── DebtsPage.ts        # Debts page object
+    ├── PayoffPage.ts       # Payoff page object
+    ├── ChartsPage.ts       # Charts page object
+    └── index.ts            # Page exports
+```
+
+**Configuration** (`playwright.config.ts`):
+
+The Playwright configuration defines:
+- Base URL for tests (typically `http://localhost:8081`)
+- Browser projects (Chromium, Firefox, WebKit)
+- Test timeout and retry settings
+- Screenshot and video capture on failure
+
+**Writing E2E Tests**:
 
 ```typescript
-// e2e/app.spec.ts
+// e2e/tests/example.spec.ts
 import { test, expect } from '@playwright/test';
+import { DebtsPage } from '../pages';
 
-test('homepage loads', async ({ page }) => {
-  await page.goto('/');
-  await expect(page).toHaveTitle(/Debtinator/);
+test('can add a new debt', async ({ page }) => {
+  const debtsPage = new DebtsPage(page);
+  await debtsPage.goto();
+  await debtsPage.addDebt({
+    name: 'Test Card',
+    type: 'credit_card',
+    balance: 1000,
+    apr: 19.99,
+    minPayment: 25,
+  });
+  await expect(page.getByText('Test Card')).toBeVisible();
 });
 ```
+
+### Test File Naming Convention
+
+| Type | Pattern | Location |
+|------|---------|----------|
+| Unit tests | `*.test.ts` or `*.test.tsx` | Same directory as source file |
+| E2E tests | `*.spec.ts` | `e2e/tests/` directory |
 
 ---
 
